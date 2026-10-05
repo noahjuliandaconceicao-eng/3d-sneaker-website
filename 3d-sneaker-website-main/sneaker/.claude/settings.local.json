@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vite *)",
+      "Read(//tmp/**)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s http://localhost:55729/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:55729/)",
+      "Bash(curl -s -o /dev/null -w \"5188:%{http_code}\\\\n\" http://localhost:5188/)",
+      "Bash(curl -s http://localhost:5188/src/App.jsx -o /dev/null -w \"appjsx:%{http_code}\\\\n\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:56360/)",
+      "Bash(pkill -f \"vite --port 5188\")",
+      "Bash(rm -f .claude/._launch.json /Volumes/Noah.c/lj2/beroeps3/sneaker/.claude/._settings.local.json)",
+      "Bash(npm -v)"
+    ]
+  }
+}

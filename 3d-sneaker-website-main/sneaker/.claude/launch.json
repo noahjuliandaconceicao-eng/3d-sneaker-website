@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pexovia",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "threejs-intro", "run", "dev"],
+      "port": 5173,
+      "autoPort": true
+    }
+  ]
+}

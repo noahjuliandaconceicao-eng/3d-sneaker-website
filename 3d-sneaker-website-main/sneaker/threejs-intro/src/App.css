@@ -1,0 +1,898 @@
+:root {
+  --red: #c8102e;
+  --red-deep: #a50d26;
+  --ink: #1f1d1e;
+  --muted: #6b6166;
+  --pink-bg: #ffe2e4;
+  --pink-bg-2: #ffd2d6;
+  --coral: #f08c8c;
+  --green: #1aa64a;
+}
+
+/* Full-screen stage, no browser-card framing */
+.frame {
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background:
+    radial-gradient(120% 120% at 80% 30%, #ff8a8a 0%, #ff6b6b 35%, #f04a5a 70%, #d63450 100%);
+}
+
+.site {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  aspect-ratio: auto;
+  border-radius: 0;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(90% 80% at 78% 35%, rgba(255, 170, 176, 0.55), transparent 60%),
+    linear-gradient(120deg, var(--pink-bg) 0%, var(--pink-bg) 55%, var(--pink-bg-2) 100%);
+}
+
+/* darker pink panel bleeding in from the right, matching the mockup */
+.site::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 160, 168, 0.45));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(18px, 2.4vw, 34px) clamp(28px, 3.6vw, 60px);
+}
+
+.logo {
+  font-weight: 800;
+  font-size: clamp(1.3rem, 1.9vw, 1.7rem);
+  color: var(--red);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+.logo span { color: var(--red); }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1.4vw, 1.1rem);
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #4a4145;
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1vw, 0.98rem);
+  padding: 0.6rem 1.05rem;
+  border-radius: 999px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.nav-link:hover { color: var(--red); }
+.nav-link.active {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(200, 16, 46, 0.4);
+}
+
+/* right-side controls cluster (lang + hamburger) */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* hamburger toggle — hidden until the phone breakpoint */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  width: 23px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.lang {
+  position: relative;
+}
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.lang-toggle:hover { background: rgba(255, 255, 255, 0.5); }
+.lang-toggle svg { transition: transform 0.2s ease; }
+.lang.open .lang-toggle { border-color: rgba(200, 16, 46, 0.3); background: rgba(255, 255, 255, 0.6); }
+.lang.open .lang-toggle svg { transform: rotate(180deg); }
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  min-width: 88px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(200, 16, 46, 0.18);
+  box-shadow: 0 16px 36px rgba(160, 30, 50, 0.22);
+  backdrop-filter: blur(8px);
+}
+.lang-option {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.lang-option:hover { background: rgba(200, 16, 46, 0.1); }
+.lang-option.active { background: var(--red); color: #fff; }
+
+/* ---------- Side rails ---------- */
+.rail {
+  position: absolute;
+  left: clamp(20px, 2.4vw, 44px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.6rem);
+}
+
+.rail-btn {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: var(--red);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.rail-btn svg { width: 22px; height: 22px; }
+.rail-btn:hover { transform: scale(1.15); color: var(--red-deep); }
+
+.dots {
+  position: absolute;
+  right: clamp(22px, 2.6vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+}
+.dot.ring {
+  width: 13px;
+  height: 13px;
+  background: transparent;
+  border: 1.6px solid var(--red);
+}
+
+/* ---------- Hero stage ---------- */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.top-selling {
+  position: absolute;
+  left: clamp(70px, 9vw, 170px);
+  top: clamp(150px, 26%, 280px);
+  margin: 0;
+  color: var(--red);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-size: clamp(0.7rem, 1vw, 0.92rem);
+}
+
+.ghost-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -56%);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-size: clamp(5rem, 16vw, 16rem);
+  line-height: 0.9;
+  color: #ff9aa0;
+  opacity: 0.5;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.nike {
+  position: absolute;
+  right: clamp(80px, 9vw, 170px);
+  top: clamp(120px, 22%, 230px);
+  width: clamp(64px, 6vw, 96px);
+  color: var(--red);
+}
+.nike svg { width: 100%; height: auto; display: block; }
+
+.varsity {
+  position: absolute;
+  right: clamp(70px, 8vw, 150px);
+  top: clamp(280px, 50%, 430px);
+  margin: 0;
+  text-align: right;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  line-height: 0.92;
+  color: #4a4145;
+  letter-spacing: 0.02em;
+}
+.varsity span { color: #4a4145; }
+
+/* coral floating bubbles */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, #ffd0d0 0%, var(--coral) 42%, #d96a6a 100%);
+  box-shadow: 0 18px 40px rgba(190, 70, 80, 0.35), inset -6px -8px 18px rgba(150, 40, 50, 0.3);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -16px; }
+}
+
+/* 3D canvas sits above ghost text + bubbles */
+.sneaker-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.badge-360 {
+  position: absolute;
+  left: 58%;
+  top: 62%;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: clamp(86px, 7vw, 110px);
+  height: clamp(86px, 7vw, 110px);
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(200, 16, 46, 0.55);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--red);
+  font-weight: 700;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: transform 0.2s ease;
+}
+.badge-360 span { opacity: 0.7; font-size: 0.85em; }
+.badge-360:hover { transform: scale(1.06); }
+
+/* ---------- Product info ---------- */
+.product {
+  position: absolute;
+  left: clamp(28px, 3.6vw, 60px);
+  bottom: clamp(28px, 4vh, 56px);
+  z-index: 6;
+  max-width: 30rem;
+}
+.product h1 {
+  margin: 0;
+  color: var(--red);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+}
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+  margin: 0.5rem 0 0.9rem;
+}
+.cat { color: #4a4145; font-weight: 600; font-size: 0.98rem; }
+.price { color: var(--green); font-weight: 800; font-size: 1.15rem; }
+.desc {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: clamp(0.86rem, 1vw, 0.96rem);
+  max-width: 27rem;
+}
+
+/* ---------- Cart control ---------- */
+.cart-control {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(34px, 5vh, 64px);
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.step {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(200, 16, 46, 0.4);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--red);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.step:hover { background: #fff; }
+
+/* ---------- Thumbnails ---------- */
+.thumbs {
+  position: absolute;
+  right: clamp(60px, 6vw, 110px);
+  bottom: clamp(28px, 4vh, 54px);
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+.thumb {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transition: transform 0.2s ease;
+}
+.thumb:hover { transform: translateY(-4px); }
+
+/* thumbnail photo */
+.thumb-img {
+  display: block;
+  width: 84px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(120, 20, 40, 0.3);
+}
+
+/* ---------- View / configurator page ---------- */
+.view-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+/* faint hero title behind the shoe, same vibe as the home page */
+.view-ghost {
+  top: 46%;
+  opacity: 0.32;
+}
+
+/* interactive canvas — pointer events ON so you can drag the shoe */
+.view-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 4;
+  cursor: grab;
+}
+.view-canvas:active { cursor: grabbing; }
+
+.drag-hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(22px, 4vh, 44px);
+  transform: translateX(-50%);
+  z-index: 6;
+  margin: 0;
+  color: var(--red);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* right-hand config cards */
+.config-panels {
+  position: absolute;
+  right: clamp(20px, 2.6vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: clamp(220px, 22vw, 280px);
+}
+
+.cfg-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem 1.15rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(200, 16, 46, 0.18);
+  box-shadow: 0 18px 40px rgba(160, 30, 50, 0.18);
+  backdrop-filter: blur(6px);
+}
+
+.cfg-tag {
+  align-self: flex-start;
+  padding: 0.28rem 0.6rem;
+  border-radius: 7px;
+  background: var(--red);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+}
+
+.cfg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+.cfg-field > span {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.cfg-field select {
+  appearance: none;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 9px;
+  border: 1px solid rgba(200, 16, 46, 0.25);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.cfg-field select:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
+.cfg-color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cfg-label {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.cfg-value {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.cfg-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--red);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.cfg-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.cfg-slider > span {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.cfg-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.cfg-slider-row output {
+  min-width: 2.2ch;
+  text-align: right;
+  color: var(--red);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.cfg-slider input[type='range'] {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(200, 16, 46, 0.25);
+  cursor: pointer;
+}
+.cfg-slider input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 4px 10px rgba(200, 16, 46, 0.45);
+}
+.cfg-slider input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.cfg-spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cfg-spec-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.cfg-spec-val {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.cfg-spec-price { color: var(--green); }
+
+.cfg-palette-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.cfg-palette-swatches {
+  display: flex;
+  gap: 0.4rem;
+}
+.cfg-swatch-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+/* ---------- About page ---------- */
+/* let the about page grow taller than the viewport and scroll */
+.site-about {
+  min-height: 100vh;
+  height: auto;
+  overflow: visible;
+}
+.site-about::after { display: none; }
+
+.about {
+  position: relative;
+  z-index: 3;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(120px, 15vh, 170px) clamp(28px, 5vw, 70px) clamp(60px, 9vh, 110px);
+}
+
+.about-title {
+  margin: 0;
+  text-align: center;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(3.4rem, 13vw, 9.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.about-rule {
+  height: 1px;
+  margin: clamp(1.6rem, 3vh, 2.6rem) 0;
+  background: rgba(31, 29, 30, 0.28);
+}
+
+.about-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) 1px minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3.5vw, 3rem);
+  padding: clamp(1.4rem, 3vh, 2.4rem) 0;
+}
+/* alternate the photo to the other side, like the editorial reference */
+.about-row.reverse {
+  grid-template-columns: minmax(0, 1.08fr) 1px minmax(0, 0.92fr);
+}
+.about-row.reverse .about-photo { order: 3; }
+.about-row.reverse .about-divider { order: 2; }
+.about-row.reverse .about-text { order: 1; text-align: right; }
+.about-row.reverse .about-text .about-index { margin-left: auto; }
+
+.about-photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.about-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.about-photo:hover img {
+  filter: grayscale(0) contrast(1);
+  transform: scale(1.03);
+}
+
+.about-divider {
+  width: 1px;
+  height: 100%;
+  min-height: 120px;
+  background: rgba(31, 29, 30, 0.28);
+}
+
+.about-index {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--red);
+}
+.about-text h2 {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.about-role {
+  margin: 0.4rem 0 1rem;
+  color: var(--red);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+.about-bio {
+  margin: 0 0 0.7rem;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: clamp(0.9rem, 1vw, 1rem);
+}
+
+/* ---------- Responsive ---------- */
+
+/* Tablet: tighten the nav + configurator panels */
+@media (max-width: 1100px) {
+  .nav { gap: 0.15rem; }
+  .nav-link { padding: 0.5rem 0.7rem; font-size: 0.82rem; }
+  .config-panels { width: clamp(180px, 28vw, 240px); }
+}
+
+/* Small tablet: shrink the floating config cards a touch */
+@media (max-width: 900px) {
+  .config-panels { width: clamp(168px, 34vw, 220px); gap: 0.7rem; }
+  .cfg-card { padding: 0.9rem 0.95rem; gap: 0.7rem; }
+}
+
+/* Phones: reflow every page into a single scrolling column */
+@media (max-width: 760px) {
+  .frame { padding: 0; align-items: stretch; }
+
+  .site {
+    width: 100%;
+    aspect-ratio: auto;
+    min-height: 100vh;
+    height: auto;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+  }
+  .site::after { display: none; }
+
+  /* --- Navbar: collapse the links into a hamburger dropdown --- */
+  .navbar {
+    position: relative;
+    inset: auto;
+    padding: 14px 20px;
+  }
+  .logo { font-size: 1.3rem; }
+  .hamburger { display: flex; }
+
+  /* the link list becomes a dropdown panel under the bar */
+  .nav {
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 12px;
+    right: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.2rem;
+    padding: 0.4rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(200, 16, 46, 0.18);
+    box-shadow: 0 18px 40px rgba(160, 30, 50, 0.22);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    z-index: 15;
+  }
+  .nav.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-link {
+    text-align: center;
+    padding: 0.7rem;
+    font-size: 0.95rem;
+    border-radius: 9px;
+  }
+
+  /* hide purely decorative side chrome on phones */
+  .rail,
+  .dots { display: none; }
+
+  /* --- Home hero --- */
+  .stage {
+    position: relative;
+    inset: auto;
+    transform: none;
+    height: 54vh;
+    min-height: 340px;
+  }
+  .top-selling { left: 24px; top: 12px; }
+  .ghost-title { font-size: 26vw; }
+  .nike { right: 24px; top: 8px; }
+  .varsity { right: 24px; top: 42%; font-size: 1.6rem; }
+  .badge-360 { left: auto; right: 20px; top: auto; bottom: 6%; }
+
+  .product {
+    position: static;
+    inset: auto;
+    transform: none;
+    padding: 1.2rem 24px 2rem;
+    max-width: none;
+  }
+  .product h1 { font-size: 2rem; }
+
+  /* --- View / configurator --- */
+  .view-stage {
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+  .view-ghost,
+  .view-stage .bubble { display: none; }
+  .view-canvas {
+    position: relative !important;
+    inset: auto;
+    width: 100%;
+    height: 46vh;
+    min-height: 320px;
+  }
+  .drag-hint {
+    position: static;
+    transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .config-panels {
+    position: static;
+    transform: none;
+    width: auto;
+    padding: 0 20px;
+    gap: 0.9rem;
+  }
+
+  /* --- About --- */
+  .site-about { overflow: visible; }
+  .about { padding: 1.8rem 22px 3rem; }
+  .about-title { font-size: clamp(2.6rem, 17vw, 5rem); }
+  .about-row,
+  .about-row.reverse {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+    padding: 1.2rem 0;
+  }
+  .about-divider { display: none; }
+  .about-row.reverse .about-photo { order: 0; }
+  .about-row.reverse .about-text { order: 0; text-align: left; }
+  .about-row.reverse .about-text .about-index { margin-left: 0; }
+  .about-photo img { aspect-ratio: 16 / 10; }
+}
+
+/* Small phones: final tightening */
+@media (max-width: 430px) {
+  .navbar { padding: 12px 16px; }
+  .logo { font-size: 1.15rem; }
+  .nav-link { padding: 0.4rem 0.6rem; font-size: 0.78rem; }
+  .product h1 { font-size: 1.7rem; }
+  .about-title { font-size: clamp(2.2rem, 18vw, 4rem); }
+  .view-canvas { height: 40vh; min-height: 280px; }
+}
